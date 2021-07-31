@@ -1,0 +1,1 @@
+function assertNever(never: never): never { throw new Error() };
