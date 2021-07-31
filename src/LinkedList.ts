@@ -12,20 +12,32 @@ interface Cons<T> {
 
 type LinkedListT<T> = Empty<T> | Cons<T>;
 
+/**
+ * Complexity: O(1)
+ */
 const empty = <T>(): LinkedListT<T> => ({
     type: "empty",
     head: null,
     tail: null,
 });
 
+/**
+ * Complexity: O(1)
+ */
+const singleton = <T>(elem: T): LinkedListT<T> => append(elem, empty());
+
+/**
+ * Complexity: O(1)
+ */
 const append = <T>(head: T, rest: LinkedListT<T>): LinkedListT<T> => ({
     type: "cons",
     head: head,
     tail: rest
 });
 
-const singleton = <T>(elem: T): LinkedListT<T> => append(elem, empty());
-
+/**
+ * Complexity: O(n)
+ */
 const fromArray = <T>(elems: T[]): LinkedListT<T> => {
     if (elems.length === 0) {
         return empty();
@@ -34,6 +46,9 @@ const fromArray = <T>(elems: T[]): LinkedListT<T> => {
     return append(head, fromArray(rest));
 }
 
+/**
+ * Complexity: O(n)
+ */
 const toArray = <T>(list: LinkedListT<T>): T[] => {
     switch (list.type) {
         case "empty": return [];
@@ -43,6 +58,9 @@ const toArray = <T>(list: LinkedListT<T>): T[] => {
     }
 }
 
+/**
+ * Complexity: O(n) with respect to `elems.length`
+ */
 const length = <T>(list: LinkedListT<T>): number => {
     switch (list.type) {
         case "empty": return 0;
