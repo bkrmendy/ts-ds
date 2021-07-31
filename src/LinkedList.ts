@@ -59,7 +59,6 @@ const LinkedLists = {
     fromArray,
     toArray,
     length
-
 }
 
 export type LinkedList<T> = Omit<LinkedListT<T>, "type">;
