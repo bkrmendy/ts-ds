@@ -6,39 +6,27 @@ interface Empty<T> {
 
 interface Cons<T> {
     head: T;
-    tail: LinkedListT<T>;
+    tail: LinkedList<T>;
     type: "cons";
 }
 
-type LinkedListT<T> = Empty<T> | Cons<T>;
+export type LinkedList<T> = Empty<T> | Cons<T>;
 
-/**
- * Complexity: O(1)
- */
-const empty = <T>(): LinkedListT<T> => ({
+const empty = <T>(): LinkedList<T> => ({
     type: "empty",
     head: null,
     tail: null,
 });
 
-/**
- * Complexity: O(1)
- */
-const singleton = <T>(elem: T): LinkedListT<T> => append(elem, empty());
+const singleton = <T>(elem: T): LinkedList<T> => append(elem, empty());
 
-/**
- * Complexity: O(1)
- */
-const append = <T>(head: T, rest: LinkedListT<T>): LinkedListT<T> => ({
+const append = <T>(head: T, rest: LinkedList<T>): LinkedList<T> => ({
     type: "cons",
     head: head,
     tail: rest
 });
 
-/**
- * Complexity: O(n)
- */
-const fromArray = <T>(elems: T[]): LinkedListT<T> => {
+const fromArray = <T>(elems: T[]): LinkedList<T> => {
     if (elems.length === 0) {
         return empty();
     }
@@ -46,10 +34,7 @@ const fromArray = <T>(elems: T[]): LinkedListT<T> => {
     return append(head, fromArray(rest));
 }
 
-/**
- * Complexity: O(n)
- */
-const toArray = <T>(list: LinkedListT<T>): T[] => {
+const toArray = <T>(list: LinkedList<T>): T[] => {
     switch (list.type) {
         case "empty": return [];
         case "cons": return [list.head, ...toArray(list.tail)];
@@ -58,10 +43,7 @@ const toArray = <T>(list: LinkedListT<T>): T[] => {
     }
 }
 
-/**
- * Complexity: O(n) with respect to `elems.length`
- */
-const length = <T>(list: LinkedListT<T>): number => {
+const length = <T>(list: LinkedList<T>): number => {
     switch (list.type) {
         case "empty": return 0;
         case "cons": return 1 + length(list.tail);
@@ -79,6 +61,5 @@ const LinkedLists = {
     length
 }
 
-export type LinkedList<T> = Omit<LinkedListT<T>, "type">;
 export default LinkedLists;
 

@@ -1,5 +1,55 @@
 import * as fc from "fast-check";
+import * as assert from "assert";
 import LinkedLists, { LinkedList } from "../src/LinkedList";
+
+type LinkedStackModel = number[];
+
+type LinkedStack = { stack: LinkedList<number> };
+type LinkedStackCommand = fc.Command<LinkedStackModel, LinkedStack>;
+
+class PopCommand implements LinkedStackCommand {
+    toString = () => "Pop";
+    check = (model: LinkedStackModel) => model.length > 0;
+    run = (model: LinkedStackModel, sut: LinkedStack) => {
+        assert.notEqual(sut.stack.tail, null);
+
+        const top = sut.stack.head;
+        const topM = model.pop();
+        assert.equal(top, topM);
+
+        sut.stack = sut.stack.tail!;
+    }
+}
+
+class PushCommand implements LinkedStackCommand {
+    constructor(
+        readonly n: number
+    ) { }
+
+    toString = () => `Push ${this.n}`;
+    check = () => true;
+    run = (model: LinkedStackModel, sut: LinkedStack) => {
+        sut.stack = LinkedLists.append(this.n, sut.stack);
+        model.push(this.n);
+
+        assert.equal(LinkedLists.length(sut.stack), model.length);
+        assert.equal(sut.stack.head, this.n);
+    }
+}
+
+class LengthCommand implements LinkedStackCommand {
+    toString = () => "Length";
+    check = () => true;
+    run = (model: LinkedStackModel, sut: LinkedStack) => {
+        assert.equal(LinkedLists.length(sut.stack), model.length);
+    }
+}
+
+const LinkedListCommands = fc.commands([
+    fc.constant(new PopCommand()),
+    fc.constant(new LengthCommand()),
+    fc.record({ n: fc.nat() }).map(({ n }) => new PushCommand(n)),
+], { maxCommands: 100 });
 
 describe("linked lists", () => {
     it("empty", () => {
@@ -21,4 +71,14 @@ describe("linked lists", () => {
             )
         )
     });
+
+    it("stm", () => {
+        fc.assert(
+            fc.property(LinkedListCommands, (commands) => {
+                const real = { stack: LinkedLists.empty() };
+                const model: LinkedStackModel = [];
+                fc.modelRun(() => ({ model, real }), commands);
+            })
+        );
+    })
 });
