@@ -3,6 +3,11 @@ import LS, { LinkedSet } from "./LinkedSet";
 export interface LRU<K, V> {
     put: (key: K, value: V) => void;
     get: (key: K) => V | null;
+
+    maxSize: Readonly<number>;
+    size: Readonly<number>;
+    mostRecentlyUsed: Readonly<K> | null;
+    leastRecentlyUsed: Readonly<K> | null;
 }
 
 class LRUImpl<K, V> implements LRU<K, V> {
@@ -10,12 +15,30 @@ class LRUImpl<K, V> implements LRU<K, V> {
     private cache: Map<K, V> = new Map<K, V>();
 
     constructor(
-        private maxSize: number
+        private readonly maxSize_: number
     ) { }
+
+    get maxSize() {
+        return this.maxSize_;
+    }
+
+    get size() {
+        return this.cache.size;
+    }
+
+    get mostRecentlyUsed() {
+        return this.elems.first;
+    }
+
+    get leastRecentlyUsed() {
+        return this.elems.last;
+    }
+
+
 
 
     put = (key: K, value: V) => {
-        if (this.elems.size >= this.maxSize) {
+        if (this.elems.size >= this.maxSize_) {
             const leastRecentlyUsed = this.elems.last!; // TODO: somehow make the `!` disappear
             this.elems.delete(leastRecentlyUsed);
             this.cache.delete(leastRecentlyUsed);

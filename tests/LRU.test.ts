@@ -18,6 +18,9 @@ class LRUPut implements LRUCommand {
     run = (model: LRUModel, sut: LRUSUT) => {
         model.push({ key: this.key, value: this.value });
         sut.put(this.key, this.value);
+
+        assert.ok(sut.size <= sut.maxSize);
+        assert.equal(sut.mostRecentlyUsed, this.key);
     }
 }
 
@@ -30,9 +33,13 @@ class LRUGet implements LRUCommand {
     check = () => true;
     run = (model: LRUModel, sut: LRUSUT) => {
         const value = sut.get(this.key);
-        const valueFromModel = model.find(({ key }) => key === this.key)?.value;
+        const resultFromModel = model.find(({ key }) => key === this.key);
 
-        assert.equal(value, valueFromModel);
+        assert.ok(sut.size <= sut.maxSize);
+        assert.equal(value, resultFromModel?.value);
+        if (resultFromModel?.value != null) {
+            assert.equal(sut.mostRecentlyUsed, this.key);
+        }
     }
 }
 

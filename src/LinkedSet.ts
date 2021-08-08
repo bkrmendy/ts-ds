@@ -120,8 +120,8 @@ class LinkedSetImpl<T> implements LinkedSet<T> {
         switch (this.linked.type) {
         case "empty": return 0;
         case "singleton": return 1;
-            case "linked": return this.linked.mapping.size;
-            /* istanbul ignore next */
+        case "linked": return this.linked.mapping.size;
+        /* istanbul ignore next */
         default: assertNever(this.linked);
     }
      };

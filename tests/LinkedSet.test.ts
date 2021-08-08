@@ -13,7 +13,7 @@ class ContainsCommand implements LinkedSetCommand {
     ) { }
 
     toString = () => `Contains ${this.n}`;
-    check = (model: LinkedSetModel) => model.includes(this.n);
+    check = () => true;
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
         const modelContainsN = model.includes(this.n);
         const sutContainsN = sut.contains(this.n);
@@ -56,9 +56,9 @@ class InsertCommand implements LinkedSetCommand {
 
 class FirstCommand implements LinkedSetCommand {
     toString = () => "First";
-    check = (model: LinkedSetModel) => model.length > 0;
+    check = () => true;
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
-        const modelFirst = model[model.length - 1];
+        const modelFirst = model[model.length - 1] ?? null;
         const sutFirst = sut.first;
         assert.equal(modelFirst, sutFirst);
     }
@@ -66,9 +66,9 @@ class FirstCommand implements LinkedSetCommand {
 
 class LastCommand implements LinkedSetCommand {
     toString = () => "Last";
-    check = (model: LinkedSetModel) => model.length > 0;
+    check = () => true;
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
-        const modelLast = model[0];
+        const modelLast = model[0] ?? null;
         const sutLast = sut.last
         assert.equal(modelLast, sutLast);
     }
