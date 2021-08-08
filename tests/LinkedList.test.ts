@@ -48,7 +48,7 @@ class LengthCommand implements LinkedStackCommand {
 const LinkedListCommands = fc.commands([
     fc.constant(new PopCommand()),
     fc.constant(new LengthCommand()),
-    fc.record({ n: fc.nat() }).map(({ n }) => new PushCommand(n)),
+    fc.record({ n: fc.nat(10) }).map(({ n }) => new PushCommand(n)),
 ], { maxCommands: 100 });
 
 describe("linked lists", () => {

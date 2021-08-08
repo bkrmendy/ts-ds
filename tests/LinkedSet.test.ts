@@ -30,7 +30,7 @@ class DeleteCommand implements LinkedSetCommand {
     check = (model: LinkedSetModel) => model.includes(this.n);
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
         sut.delete(this.n);
-        const idx = model.findIndex(n => n === this.n);
+        const idx = model.indexOf(this.n);
         if (idx >= 0) {
             model.splice(idx, 1);
         }
@@ -45,26 +45,32 @@ class InsertCommand implements LinkedSetCommand {
     toString = () => `Insert ${this.n}`;
     check = () => true;
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
+        const idx = model.indexOf(this.n);
+        if (idx > -1) {
+            model.splice(idx, 1);
+        }
         model.push(this.n);
         sut.insert(this.n);
     }
 }
 
-class AtCommand implements LinkedSetCommand {
-    constructor(
-        readonly idx: number
-    ) { }
-
-    toString = () => `At: ${this.idx}`;
-    check = (model: LinkedSetModel) => this.idx < model.length;
+class FirstCommand implements LinkedSetCommand {
+    toString = () => "First";
+    check = (model: LinkedSetModel) => model.length > 0;
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
-        let elem: number | null = null;
-        if (this.idx < model.length) {
-            elem = model[this.idx];
-        }
+        const modelFirst = model[model.length - 1];
+        const sutFirst = sut.first;
+        assert.equal(modelFirst, sutFirst);
+    }
+}
 
-        const elemFromSUT = sut.at(this.idx);
-        assert.equal(elemFromSUT, elem);
+class LastCommand implements LinkedSetCommand {
+    toString = () => "Last";
+    check = (model: LinkedSetModel) => model.length > 0;
+    run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
+        const modelLast = model[0];
+        const sutLast = sut.last
+        assert.equal(modelLast, sutLast);
     }
 }
 
@@ -72,16 +78,17 @@ class SizeCommand implements LinkedSetCommand {
     toString = () => "Size";
     check = () => true;
     run = (model: LinkedSetModel, sut: LinkedSetSUT) => {
-        assert.equal(model.length, sut.size());
+        assert.equal(model.length, sut.size);
     }
 }
 
 const LinkedSetCommands = fc.commands([
     fc.constant(new SizeCommand()),
-    fc.nat().map(n => new AtCommand(n)),
-    fc.nat().map(n => new InsertCommand(n)),
-    fc.nat().map(n => new DeleteCommand(n)),
-    fc.nat().map(n => new ContainsCommand(n)),
+    fc.constant(new FirstCommand()),
+    fc.constant(new LastCommand()),
+    fc.nat(10).map(n => new InsertCommand(n)),
+    fc.nat(10).map(n => new DeleteCommand(n)),
+    fc.nat(10).map(n => new ContainsCommand(n)),
 ], { maxCommands: 100 });
 
 describe("LinkedSet", () => {
@@ -91,7 +98,6 @@ describe("LinkedSet", () => {
                 const real = LinkedSets.linkedSet<number>();
                 const model: LinkedSetModel = [];
                 fc.modelRun(() => ({ model, real }), commands);
-            })
-        );
-    })
-})
+            }), { seed: 280929447 });
+    });
+});

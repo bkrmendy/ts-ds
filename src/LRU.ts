@@ -15,8 +15,8 @@ class LRUImpl<K, V> implements LRU<K, V> {
 
 
     put = (key: K, value: V) => {
-        if (this.elems.size() >= this.maxSize) {
-            const leastRecentlyUsed = this.elems.at(0)!;
+        if (this.elems.size >= this.maxSize) {
+            const leastRecentlyUsed = this.elems.last!; // TODO: somehow make the `!` disappear
             this.elems.delete(leastRecentlyUsed);
             this.cache.delete(leastRecentlyUsed);
         }
@@ -25,7 +25,7 @@ class LRUImpl<K, V> implements LRU<K, V> {
     }
 
     get = (key: K) => {
-        if (this.elems.size() < 1) {
+        if (this.elems.size < 1) {
             return null;
         }
 
