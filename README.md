@@ -16,7 +16,6 @@ The basic idea is to define a set of **commands**, which are run on the real sys
 
 ## DS Wish List:
 - [x] Linked list
-- [x] Doubly linked list
 - [x] LRU
 - [x] FIFO
 - [ ] Ring buffer
