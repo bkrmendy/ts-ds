@@ -89,10 +89,10 @@ const LinkedSetCommands = fc.commands([
     fc.nat(10).map(n => new InsertCommand(n)),
     fc.nat(10).map(n => new DeleteCommand(n)),
     fc.nat(10).map(n => new ContainsCommand(n)),
-], { maxCommands: 100 });
+], { maxCommands: 1000 });
 
 describe("LinkedSet", () => {
-    it("fc-stm test", () => {
+    it("fastcheck", () => {
         fc.assert(
             fc.property(LinkedSetCommands, (commands) => {
                 const real = LinkedSets.linkedSet<number>();

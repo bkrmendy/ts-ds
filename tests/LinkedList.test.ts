@@ -49,7 +49,7 @@ const LinkedListCommands = fc.commands([
     fc.constant(new PopCommand()),
     fc.constant(new LengthCommand()),
     fc.record({ n: fc.nat(10) }).map(({ n }) => new PushCommand(n)),
-], { maxCommands: 100 });
+], { maxCommands: 1000 });
 
 describe("linked lists", () => {
     it("empty", () => {
@@ -72,7 +72,7 @@ describe("linked lists", () => {
         )
     });
 
-    it("stm", () => {
+    it("fastcheck", () => {
         fc.assert(
             fc.property(LinkedListCommands, (commands) => {
                 const real = { stack: LinkedLists.empty() };

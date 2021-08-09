@@ -85,10 +85,10 @@ const LRUCommands = fc.commands([
     fc.nat(10).map(n => new LRUGet(n)),
     fc.constant(new LRUMostRecent()),
     fc.constant(new LRULeastRecent())
-], { maxCommands: 100 });
+], { maxCommands: 1000 });
 
 describe("LRU", () => {
-    it("fc-stm test", () => {
+    it("fastcheck", () => {
         fc.assert(
             fc.property(LRUCommands, (commands) => {
                 const real = LRUs.lru<number, number>(10);

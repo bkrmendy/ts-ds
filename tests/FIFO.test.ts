@@ -45,7 +45,7 @@ const FIFOCommands = fc.commands([
     fc.nat().map(n => new PutCommand(n)),
     fc.constant(new GetCommand()),
     fc.constant(new PeekCommand()),
-])
+], { maxCommands: 1000 })
 
 describe("FIFO", () => {
     it("fastcheck", () => {
